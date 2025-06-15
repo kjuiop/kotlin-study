@@ -45,3 +45,102 @@ for (long i = 0; i < 1_000_000; i++) {
 ### Kotlin 에서의 객체 인스턴스화
 
 - 객체 인스턴스화를 할 때에는 new 를 붙이지 않아야 한다.
+
+
+<br />
+
+## 코틀린에서 Type 을 다루는 법
+
+- 코틀린의 변수는 초기값을 보고 타입을 추론하며, 기본 타입들 간의 변환은 명시적으로 이루어진다.
+- 코틀린에서는 is, !is, as, as? 를 이용해 타입을 확인하고 캐스팅한다.
+- 코틀린의 Any 는 Java 의 Object 와 같은 최상위 타입이다.
+- 코틀린의 Unit 은 Java 의 void 와 동일하다.
+- 코틀린에 있는 Nothing 은 정상적으로 끝나지 않는 함수의 반환을 의미한다.
+
+### 기본 타입
+
+- Byte, Short, Int, Long, Float, Double, 부호 없는 정수들
+- kotlin 에서는 선언된 기본 값을 보고 타입을 추론
+- java 는 기본 타입 간의 변환이 암시적으로 이루어질 수 있다.
+  `int number = 1`
+  `long number2 = number1;`
+- kotlin 은 java 와 다르게 기본 타입 간의 변환은 명시적으로 이루어져야 한다.
+  `val number1: Int = 4`
+  `val number2: Long = number1.toLong()`
+- 변수가 nullable 이면 null 처리가 필요
+  `val number1: Int? = 3`
+  `val number2: Long = number1?.toLong : 0L`
+
+### 타입 캐스팅
+
+- java 에서는 instanceof (변수가 주어진 타입이면 true, 그렇지 않으면 false) 를 사용함
+
+```kotlin
+fun printAgeIfPerson1(obj: Any) {
+    if (obj is Person) {
+        val person = obj as Person
+        println(person.age)
+    }
+}
+```
+
+- kotlin 에서는 instanceof 대신 `is` 를 사용해서 조건을 대신함
+- as 를 통해 기존 java 의 `(Person)`  을 대체함
+
+```kotlin
+fun printAgeIfPerson2(obj: Any) {
+    if (obj is Person) {
+        println(obj.age)
+    }
+}
+```
+
+- 또한 스마트 캐스팅이라고 해서 `is` 문법 안에 들어온 경우 캐스팅되었다고 판단함
+- `!is` 표현을 통해 반대의 조건도 걸 수 있음
+
+```kotlin
+fun printAgeIfPerson4(obj: Any?) {
+    val person = obj as? Person
+    println(person?.age)
+}
+```
+
+- `as?` 는 Type 이면 타입 캐스팅, `null` 이거나 타입이 아니면 `null`
+
+### Kotlin 의 3가지 특이한 타입
+
+- Any
+  - java 의 Object 역할 (모든 객체의 최상위 타입)
+  - 모든 Primitive Type 의 최상위 타입도 Any이다.
+  - Any 자체로는 null 을 포함할 수 없어 null 을 포함하고 싶다면, Any? 로 표현
+  - Any 에 equals / hashCode / toString 존재
+
+- unit
+  - java 의 void 와 동일한 역할
+  - void 와 다르게 unit 은 그 자체로 타입 인자로 사용 가능하다.
+  - 함수형 프로그래밍에서 Unit 은 단 하나의 인스턴스만 갖는 타입을 의미, 즉 코틀린의 Unit 은 실제 존재하는 타입이라는 것을 표현
+
+- nothing
+  - nothing 은 함수가 정상적으로 끝나지 않았다는 사실을 표현하는 역할
+  - 무조건 예외를 반환하는 함수 / 무한 루프 함수 등
+
+- String interpolation / String indexing
+  - `val log = “사람의 이름은 ${person.name} 이고 나이는 ${person.age} 세 입니다.”`
+  - `${변수}` 를 사용하는 것이 가독성, 일괄 변환, 정규식 활용 측면에서 좋습니다.
+
+### String Interpolation, String indexing
+
+```kotlin
+fun main() {
+    val str = """
+        ABCD
+        EFG
+    """.trimIndent()
+    println(str)
+}
+```
+
+- Kotlin 에서 문자열의 특정 문자 가져오기
+
+  `val str = “ABCDE”`
+  `val ch = str[1]`
