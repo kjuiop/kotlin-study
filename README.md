@@ -559,3 +559,143 @@ fun main() {
 - 위처럼 배열을 받을 때에는 `*` 를 붙여줘야 한다.
 
 <br />
+
+---
+
+# 코틀린에서의 OOP
+
+
+## 코틀린에서 클래스를 다루는 방법
+
+- 코틀린에서는 필드를 만들면 getter 와 setter 가 자동으로 생긴다
+  - 이를 property 라 부른다.
+- 코틀린에서는 주 생성자가 필수이다.
+- 코틀린에서는 constructor 키워드를 통해 부생성자를 추가로 만들 수 있다.
+  - 단, defualt parameter 나 정적 팩토리 메서드를 추천한다.
+- custom getter, setter 에서 무한루프를 막기 위해 field 라는 키워드를 사용하는데, 이를 backing field 라 한다.
+
+### 클래스와 프로퍼티
+
+```kotlin
+class Person constructor(name: String, age: Int){
+
+    val name = name
+    var age = age
+}
+```
+
+- kotlin 에서 생성자는 class 맨 위에 작성한다.
+- kotlin 에서 getter, setter 는 자동으로 생성되기 때문에 따로 정의할 필요가 없다.
+
+```kotlin
+class Person(val name: String, var age: Int)
+```
+
+- constructor 지시어는 생략될 수 있다.
+- 생성자에서 property 를 만들 수 있기 때문에 block 안에 따로 정의할 필요가 없다.
+- body 안에 내용이 없으면 생략 가능하다.
+
+```kotlin
+fun main() {
+    val person = Person("jake", 100)
+    person.age = 50
+    println(person.age)
+}
+```
+
+- getter, setter 가 생략될 수 있기 때문에 위처럼 값을 호출할 수 있다.
+
+### 생성자와 init
+
+```kotlin
+class Person(val name: String, var age: Int) {
+    init {
+        if (age <= 0) {
+            throw IllegalArgumentException("나이는 $age 일 수 없습니다.")
+        }
+    }
+}
+```
+
+- init 과 같이 처음 클래스를 생성할 때 최초 실행되는 함수를 의미한다.
+
+```kotlin
+fun main() {
+    val person = Person("jake", 0)
+    person.age = 50
+    println(person.age)
+}
+```
+
+- 생성자 단계에서 0을 인자로 넘긴 경우 에러가 발생한다.
+
+```kotlin
+class Person(
+    val name: String,
+    var age: Int
+) {
+    init {
+        if (age <= 0) {
+            throw IllegalArgumentException("나이는 $age 일 수 없습니다.")
+        }
+    }
+
+    constructor(name: String) : this(name, 1)
+    
+    constructor(): this("제이크") {
+        println("부 생성자 생성")
+    }
+}
+```
+
+- 위와 같이 생성자를 2개 이상 만들 수 있다.
+- 이름만으로 Person 객체를 생성한 경우 나이는 1이 된다.
+- 주 생성자는 반드시 존재해야 한다.
+- 부 생성자는 최종적으로 주 생성자를 this 로 호출해야 한다.
+- 생성자 안에는 body 를 사용할 수 있다.
+- 본문은 역순으로 실행됨
+- kotlin 에서는 부생성자보다는 default parameter 를 권장한다.
+
+### 커스텀 getter, setter
+
+```kotlin
+val isAdult: Boolean
+	get() = age >= 20
+```
+
+- 함수를 커스텀 getter 를 통해 필드처럼 사용할 수 있다.
+
+### backing field
+
+```kotlin
+class Person(
+    name: String,
+    var age: Int
+) {
+
+    val name = name
+        get() = field.uppercase()
+}
+```
+
+- field 로 지정해야하는데, 그 이유는 `name.` 자체가 getter 를 부르는 예약어이기 때문이다.
+- 이러한 field 를 backing field 라고 부른다.
+
+```kotlin
+class Person(
+    name: String,
+    var age: Int
+) {
+
+    var name = name
+        set(value) {
+            field = value.uppercase()
+        }
+}
+```
+
+- 위처럼 custom setter 를 만들 수 있다.
+
+<br />
+
+
