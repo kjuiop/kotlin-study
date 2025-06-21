@@ -411,3 +411,66 @@ public open class IntProgression
 
 <br />
 
+## 코들린에서 예외를 다루는 법
+
+- try-catch-finally 구문은 문법적으로 동일하다.
+  - kotlin 에서는 try-catch 문은 expression 이다.
+- kotlin 에서 모든 예외는 Unchekced Exception 이다.
+- kotlin 에서 try-with-resource 구문 대신 코틀린의 언어적 특징을 활용해 close 를 호출한다.
+
+### try catch finally
+
+```kotlin
+fun parseIntOrThrow1(str : String): Int {
+    try {
+        return str.toInt()
+    } catch (e: NumberFormatException) {
+        throw IllegalArgumentException("주어진 $str 는 숫자가 아닙니다.")
+    }
+}
+```
+
+- kotlin 에서의 에러처리 기본 예제
+
+```kotlin
+fun parseIntOrThrow2(str : String): Int? {
+    return try {
+        str.toInt()
+    } catch (e: NumberFormatException) {
+        null
+    }
+}
+```
+
+- kotlin 에서 try-catch 문도 문장이 아닌 값으로 return 구문으로 처리할 수 있다.
+
+### Checked Exception 과 Unchecked Exception
+
+- kotlin 에서는 Checked Exception 과 UnChecked Exception 을 구분하지 않음
+
+```kotlin
+class FilePrinter {
+    fun readFile() {
+        val currentFile = File(".")
+        val file = File(currentFile.absolutePath + "/a.txt")
+        val reader = BufferedReader(FileReader(file))
+        println(reader.readLine())
+        reader.close()
+    }
+}
+```
+
+### try with resources
+
+```kotlin
+class FilePrinter {
+    // try-resource 구문 대신 use 구문 사용
+    fun readFileTryWithResource(path: String) {
+        BufferedReader(FileReader(path)).use { reader ->
+            println(reader.readLine())
+        }
+    }
+}
+```
+
+
