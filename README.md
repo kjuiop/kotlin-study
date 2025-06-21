@@ -328,3 +328,86 @@ fun judgeNumber2(number: Int) {
 ```
 
 - when 절에서는 값의 존재여부만 체크하고 조건문 로직 검사
+
+
+<br />
+
+
+## 코틀린에서 반복문을 다루는 방법
+
+- for each 문에서 java 는 `:` , kotlin 에서는 `in` 을 사용한다.
+- 전통적인 for 문에서 kotlin 은 등차수열과 `in` 을 사용한다.
+- 그 외 for 문, while, do while 문법은 모두 동일하다.
+
+### for-each 문
+
+```kotlin
+fun printForEach() {
+    val numbers = listOf(1L, 2L, 3L)
+    for (number in numbers) {
+        println(number)
+    }
+}
+```
+
+- `:` 대신 `in` 절을 사용
+
+### 전통적인 for 문
+
+```kotlin
+fun printTraditionalFor() {
+    for ( i in 1..3) {
+        println(i)
+    }
+}
+```
+
+- `..` 으로 범위를 나타낼 수 있음
+
+```kotlin
+fun printTraditionalForDownTo() {
+    for ( i in 3 downTo 1) {
+        println(i)
+    }
+}
+```
+
+- `downTo` 절을 통해 감소하는 for 문
+
+```kotlin
+fun printTraditionalForStep() {
+    for ( i in 1..5 step 2) {
+        println(i)
+    }
+}
+```
+
+- `step` 절을 통해 증가하는 단위 설정
+
+### Progression 과 Range
+
+```kotlin
+public open class IntProgression
+    internal constructor
+    (
+            start: Int,
+            endInclusive: Int,
+            step: Int
+    ) : Iterable<Int> {
+    init {
+        if (step == 0) throw kotlin.IllegalArgumentException("Step must be non-zero.")
+        if (step == Int.MIN_VALUE) throw kotlin.IllegalArgumentException("Step must be greater than Int.MIN_VALUE to avoid overflow on negation.")
+    }
+```
+
+- `..` 절을 따라가다보면 등차수열 클래스를 상속받는 것을 알 수 있다.
+- IntProgression 에서는 시작점, 끝점, 단위 의 세가지 인수를 받게 되어있다.
+- downTo, step 도 함수 (중위 호출 함수)
+- 변수.함수이름(argument) 대신 변수 함수이름 argument 로 사용된다.
+
+### while 문
+
+- while 문은 java 와 완전히 동일하다. (do-while 도 마찬가지)
+
+<br />
+
