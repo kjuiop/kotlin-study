@@ -699,3 +699,175 @@ class Person(
 <br />
 
 
+## 코틀린에서 상속을 다루는 방법
+
+- 상속 또는 구현을 할 때에 `:` 을 사용해야 한다.
+- 상위 클래스 상속을 구현할 때 생성자를 반드시 호출해야 한다.
+- override 를 필수로 붙여야 한다.
+- 추상 멤버가 아니면 기본적으로 override가 불가능하다.
+  - open 을 사용하면 override 가 가능하다.
+- 상위 클래스의 생성자 또는 초기화 블록에서 open 프로퍼티를 사용하면 예기치 못한 버그가 생길 수 있다.
+
+### 추상 클래스
+
+```kotlin
+abstract class Animal (
+    protected val species: String,
+    protected open val legCount: Int
+) {
+    abstract fun move()
+}
+```
+
+- 추상 클래스는 java 와 동일하게 abstract 를 붙여준다.
+
+```kotlin
+class Cat(
+    species: String
+) : Animal(species, 4) {
+
+    override fun move() {
+        println("고양이가 사뿐 사뿐 걸어가~~")
+    }
+}
+
+```
+
+- 코틀린에서는 `extends` 대신 `:` 와 상위 클래스의 생성자를 사용한다.
+- 코틀린에서는 override 어노테이션이 아닌 지시어로 사용한다.
+
+```kotlin
+class Penguin(
+    species: String
+) :Animal(species, 2) {
+
+    private val wingCount: Int = 2
+
+    constructor(species: String, wingCount: Int) : this(species)
+
+    override fun move() {
+        println("펭귄이 뒤뚱뒤뚱 걸어가~~")
+    }
+
+    override val legCount: Int
+        get() = super.legCount + this.wingCount
+}
+```
+
+- 코틀린에서 추상 클래스의 필드를 override 하려고 할 때에는 open 을 사용해야한다.
+  - `protected open val legCount: Int`
+- 추상 클래스에서 자동으로 만들어진 getter 를 상속 받을 때에 open 을 붙여야 한다.
+- java, kotlin 모두 추상클래스를 인스턴스화 할 수 없다.
+
+### 인터페이스
+
+```kotlin
+interface Flyable {
+
+    fun act() {
+        println("파닥 파닥")
+    }
+}
+```
+
+- kotlin 에서도 인터페이스를 위와 같이 구현한다. default 접근제어자는 생략 가능하다.
+
+```kotlin
+class Penguin(
+    species: String
+) : Animal(species, 2), Swimable, Flyable {
+
+    private val wingCount: Int = 2
+
+    constructor(species: String, wingCount: Int) : this(species)
+
+    override fun move() {
+        println("펭귄이 뒤뚱뒤뚱 걸어가~~")
+    }
+
+    override val legCount: Int
+        get() = super.legCount + this.wingCount
+
+    override fun act() {
+        super<Swimable>.act()
+        super<Flyable>.act()
+    }
+
+}
+```
+
+- 인터페이스를 `implement` 할 때에는 상속과 마찬가지로 `:` 를 사용한다.
+- 앞의 추상클래스 상속이 존재하는 경우 `,` 를 통해 `implement` 를 할 수 있다.
+- 인터페이스의 함수를 `override` 하기 위해서는 `super<Interface>.method()` 식으로 구성할 수 있다.
+- java, kotlin 모두 인터페이스를 인스턴스화 할 수 없다.
+
+```kotlin
+interface Swimable {
+
+    val swimAbility: Int
+        get() = 3
+
+    fun act() {
+        println("어푸 어푸")
+    }
+}
+```
+
+- kotlin 에서는 backing field 가 없는 프로퍼티를 interface 에 만들 수 있다.
+- `get() = 3` 은 있으면 default custom getter, 없으면 상속받는 클래스에서 의무로 구현해야 한다.
+
+```kotlin
+ override val swimAbility: Int
+	 get() = 3
+```
+
+- 위와 같이 backing field 프로퍼티를 커스텀 getter 로 구현할 수 있다.
+
+### 클래스를 상속할 때 주의할 점
+
+```kotlin
+fun main() {
+    Derived(300)
+}
+
+open class Base(
+    open val number: Int = 100
+) {
+    init {
+        println("Base Class")
+        println(number)
+    }
+}
+
+class Derived(
+    override val number: Int
+) : Base(number) {
+
+    init {
+        println("Derived Class")
+        println(number)
+    }
+}
+
+---
+Base Class
+0
+Derived Class
+300
+```
+
+- Derived 를 인스턴스화 하면 먼저 추상 클래스의 init 함수가 실행된다.
+- 상위클래스에서 number 를 호출하게 되면 아직 하위 클래스의 number 에 값이 주입이 되지 않은 상태이기 때문에 0의 값을 갖게 되고, 이를 0으로 출력하게 된다.
+- 그리고 하위 클래스의 init 함수가 출력되게 된다.
+- 하위 클래스에서 init 을 호출할 때에는 인자값으로 number 에 300이 주입이 완료되었기 때문에 정상적으로 300을 출력한다.
+
+- 상위 클래스를 설계할 때 생성자 또는 초기화 블록에 사용되는 프로퍼티에는 open 을 피해야 한다.
+
+### 상속 관련 지시어 정리
+
+- final : override 를 할 수 없게 한다. default 로 보이지 않게 존재한다.
+- open : override 를 열어 준다.
+- abstract : 반드시 override 를 해야한다.
+- override : 상위 타입을 오버라이드 하고 있다.
+
+<br />
