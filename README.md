@@ -474,3 +474,88 @@ class FilePrinter {
 ```
 
 
+## 코틀린에서 함수를 다루는 방법
+
+- body 가 하나의 값으로 간주되는 경우 block 을 없앨 수 있고, block 이 없다면 반환 타입을 없앨 수 있다.
+- 함수 파라미터에 기본 값을 설정할 수 있다.
+- 함수를 호출할 때 특정 파라미터를 지정할 수 있다.
+- 가변인자에 `vararg` 키워드를 사용하며, 가변인자 함수를 배열과 호출할 때에는 `*` 를 붙여줘야 한다.
+
+### 함수 선언 문법
+
+```kotlin
+fun max1(a: Int, b: Int): Int {
+    return if (a > b) {
+        a
+    } else {
+        b
+    }
+}
+```
+
+- kotlin 에서 if 문은 값이기 때문에 함수를 위와 같이 사용할 수 있다.
+
+```kotlin
+fun max2(a: Int, b: Int): Int =
+    if (a > b) {
+        a
+    } else {
+        b
+    }
+
+```
+
+- 중괄호 안의 본문이 값을 의미하는 경우 `=`  으로 사용 가능하다.
+
+```kotlin
+fun max3(a: Int, b: Int): Int = if (a > b) a else b
+```
+
+- 함수를 한줄로 간단하게 작성할 수 있다.
+- `=` 을 사용하면 함수의 반환값을 생략할 수 있다.
+
+### default parameter
+
+```kotlin
+fun repeat(str: String, num: Int = 3, useNewLine: Boolean = true) {
+    for (i in 1..num) {
+        if (useNewLine) {
+            println(str)
+        } else {
+            print(str)
+        }
+    }
+}
+```
+
+- 코틀린에서는 파라미터에 default 값을 정의할 수 있어, 인자만 다른 중복된 메서드를 작성할 필요가 없다.
+
+### named argument (parameter)
+
+- `*repeat*("Hello World", useNewLine = false)` 처럼 prameter 에 이름을 직접 정의함으로써 인자의 순서에 상관없이 값을 넘길 수 있다.
+- 이 부분도 인자에 이름을 적용할 수 있기 때문에 순서에 상관없이 값을 정확하게 넘길 수 있다.
+- 그러나 kotlin 에서 java 함수를 가져올 때에는 사용할 수 없다.
+
+### 같은 타입의 여러 파라미터 받기 (가변인자)
+
+```kotlin
+fun printAll(vararg strings: String) {
+    for (str in strings) {
+        println(str)
+    }
+}
+```
+
+- `vararg` 를 사용하여 한 번에 여러 파라미터를 받을 수 있다.
+
+```kotlin
+fun main() {
+    val array = arrayOf("A", "B", "C")
+    printAll(*array)
+}
+
+```
+
+- 위처럼 배열을 받을 때에는 `*` 를 붙여줘야 한다.
+
+<br />
