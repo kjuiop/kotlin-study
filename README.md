@@ -871,3 +871,77 @@ Derived Class
 - override : 상위 타입을 오버라이드 하고 있다.
 
 <br />
+
+
+## 코틀린에서 접근 제어를 다루는 방법
+
+- Kotlin 패키지는 namespace 관리용이기 때문에 protected 는 의미가 달라졌다.
+- kotlin 에서는 default 가 사라지고, 모듈간의 접근을 통제하는 internal 이 새로 생겼다.
+- 생성자에 접근 지시어를 붙일 때에는 constructor 를 명시적으로 써주어야 한다.
+- 유틸성 함수를 만들 때 파일 최상단을 이용하면 편리하다.
+- 프로퍼티의 custom setter 에 접근 지시어를 붙일 수 있다.
+- Java 에서 Kotlin 코드를 사용할 때 internal 과 protected 는 주의해야 한다.
+
+### 자바와 코틀린의 가시성 제어
+
+- java
+  - public : 모든 곳에서 접근 가능
+  - protected : 같은 패키지 또는 하위 클래스에서만 접근 가능
+  - default : 같은 패키지에서만 접근 가능
+  - private : 선언된 클래스 내에서만 접근 가능
+- kotlin
+  - public : 모든 곳에서 접근 가능
+  - protected : 선언된 클래스 또는 하위 클래스에서만 접근 가능
+  - internal : 같은 모듈에서만 접근 가능
+  - private : 선언된 클래스 내에서만 접근 가능
+
+- Kotlin 에서는 패키지를 namespace 를 관리하기 위한 용도로만 사용, 가시성 제어에는 사용되지 않음
+- Java 의 기본 접근 지시어는 default, Kotlin 의 기본 접근 지시어는 public
+
+### 코틀린 파일의 접근 제어
+
+- kotlin 은 .kt 파일에 변수, 함수, 클래스 여러개를 바로 만들 수 있다.
+
+- kotlin
+  - public : 기본값, 어디서든 접근할 수 있다.
+  - protected : 파일(최상단)에는 사용 불가능
+  - internal : 같은 모듈에서만 접근 가능
+  - private : 같은 파일 내에서만 접근 가능
+
+### 다양한 구성요소의 접근 제어
+
+- kotlin
+  - public : 모든 곳에서 접근 가능
+  - protected : 선언된 클래스 또는 하위 클래스에서만 접근 가능
+  - internal : 같은 모듈에서만 접근 가능
+  - private : 선언된 클래스 내에서만 접근 가능
+
+- 생성자에 접근 지시어를 붙이려면 constructor 를 써야 한다.
+
+- 프로퍼티
+
+```kotlin
+class Car (
+    internal val name: String,
+    private var owner: String,
+    _price: Int
+) {
+    var price = _price
+        private set
+}
+```
+
+- property 앞에 internal, private 과 같은 접근제어자를 작성할 수 있다.
+- 접근 제어자가 없으면 기볹거으로 public 이다.
+- property 를 입력하면 기본적으로 getter, setter 가 작성되는데, 이 메서드에 대해 각각 접근 제어자를 붙일 수 있다.
+
+### Java 와 Kotlin 을 함께 사용할 경우 주의할 점
+
+- internal 은 바이트 코드 상 public 이 된다.
+  - 때문에 java 코드에서는 kotlin 모듈의 internal 코드를 가져올 수 있다.
+- kotlin 의 protected 와 java 의 protected 는 다르다.
+  - java 는 같은 패키지의 kotlin proteced 멤버에 접근할 수 있다.
+
+
+<br />
+
