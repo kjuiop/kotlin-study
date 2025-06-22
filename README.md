@@ -945,3 +945,99 @@ class Car (
 
 <br />
 
+## 코틀린에서 object 키워드를 다루는 방법
+
+- java 의 static 변수와 함수를 만드려면, kotlin 에서는 companion object 를 사용해야 한다.
+- companion object 도 하나의 객체로 간주되기 때문에 이름을 붙일 수 있고, 다른 타입을 상속받을 수도 있다.
+- kotlin 에서 싱글톤 클래스를 만들 때 object 키워드를 사용한다.
+- kotlin 에서 익명 클래스를 만들 때 object : 타입을 사용한다.
+
+### static 함수와 변수
+
+- static : 클래스가 인스턴스화 될 때 새로운 값이 복제되는 게 아니라 정적으로 인스턴스끼리의 값을 공유
+- companion object : 클래스와 동행하는 유일한 오브젝트
+
+```kotlin
+fun main() {
+    val person = Person.Factory.newBody("jake")
+    println(person.name)
+}
+
+class Person private constructor (
+    val name: String,
+    val age: Int,
+) {
+    // static 대신 companion object
+    companion object Factory : Log{
+        // runtime 시 값이 할당됨
+        // var MIN_AGE = 1
+
+        // 컴파일 시 값이 할당 됨
+        const val MIN_AGE = 1
+        fun newBody(name: String) = Person(name, MIN_AGE)
+
+        override fun log() {
+            println("나는 동적 객체이다.")
+        }
+    }
+}
+```
+
+- Runtime 시 변수에 값이 할당된다.
+- const 를 val 앞에 붙이게 되면 컴파일 시 값이 변수에 할당된다.
+- 사용 방법은 java 와 동일하다.
+- 단, java 의 static 과 다르게 companion object 는 하나의 객체로 간주된다.
+  - 이름을 부여할 수 있고, interface 를 구현할 수도 있다.
+  - companion object 에 유틸성 함수를 넣을 수는 있지만 유틸성 함수는 최상단 파일을 활용하는 것을 추천
+
+### 싱글톤
+
+```kotlin
+fun main() {
+    println(Singleton.a)
+}
+
+object Singleton {
+    var a: Int = 0
+}
+```
+
+- kotlin 에서는 싱글톤을 생성하기 위해서는 앞에 object 만 붙이면 된다.
+
+### 익명 클래스
+
+- 특정 인터페이스나 클래스를 상속받은 구현체를 일회성으로 사용할 때 쓰는 클래스
+
+```kotlin
+interface Movable {
+    fun move()
+    fun fly()
+}
+
+fun moveSomething(movable: Movable) {
+    movable.move()
+    movable.fly()
+}
+```
+
+- 위와 같은 인터페이스와 구현체가 있을 때
+
+```kotlin
+fun main() {
+    moveSomething(object : Movable {
+        override fun move() {
+            println("move")
+        }
+        override fun fly() {
+            println("fly")
+        }
+    })
+}
+
+```
+
+- Movable 을 상속받은 object 를 만들 수 있다.
+- java 에서는 `new 타입이름()` , kotlin 에서는 `object : 타입이름`
+
+
+<br />
